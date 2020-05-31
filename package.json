@@ -1,0 +1,41 @@
+{
+  "name": "remix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "*",
+    "form-data": "^3.0.0",
+    "node-fetch": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "@babel/preset-react": "*",
+    "babel-loader": "*",
+    "concurrently": "*",
+    "cross-env": "*",
+    "css-loader": "*",
+    "file-loader": "*",
+    "html-webpack-plugin": "*",
+    "nodemon": "*",
+    "style-loader": "*",
+    "url-loader": "*",
+    "webpack": "*",
+    "webpack-cli": "*",
+    "webpack-dev-server": "*",
+    "webpack-hot-middleware": "*"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "server/data/*",
+      "client/*"
+    ]
+  }
+}

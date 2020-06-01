@@ -1,19 +1,28 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const path = require('path');
+const cookieParser = require('cookie-parser')
+const dotenv = require('dotenv');
+dotenv.config();
 const app = express();
 const PORT = 8080;
 
 const redditState = "kek4rv89yBHJVD5YRT569HJNhkj"
 const redSecret = "NCrMAEYEduRuTWLK8ZpYVMtA69c";
 
-const remixRouter = require('./routes/remix.js');
+const remixRouter = require('./routes/remixRouter.js');
+const sessionRouter = require('./routes/sessionRouter.js')
+const sessionController = require('./controllers/sessionController.js')
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser())
 
 app.use('/remix', remixRouter);
+app.use('/auth', sessionRouter);
 
+app.use('/', sessionController.getJWT, sessionController.getSession); //, (req, res, next) => console.log(res.locals.upvoted));
 
 
 // authorization URL for client to grant us access to reddit account:
@@ -46,9 +55,6 @@ app.use((err, req, res, next) => {
   console.log('sending error status: ', errorObj.status);
   console.log('sending error msg: ', errorObj.message);
   return res.sendStatus(errorObj.status);
-  //res.sendStatus(errorObj.status).json(errorObj.message.err);
-  //res.status(errorObj.status);
-  //res.send(errorObj.message);
 });
 
 

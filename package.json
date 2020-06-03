@@ -27,6 +27,7 @@
     "css-loader": "*",
     "file-loader": "*",
     "html-webpack-plugin": "*",
+    "mongoose": "^5.9.16",
     "nodemon": "*",
     "style-loader": "*",
     "url-loader": "*",

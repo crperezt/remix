@@ -5,24 +5,27 @@ const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
-const PORT = 8080;
+const PORT = 3000;
 
-const redditState = "kek4rv89yBHJVD5YRT569HJNhkj"
-const redSecret = "NCrMAEYEduRuTWLK8ZpYVMtA69c";
-
-const remixRouter = require('./routes/remixRouter.js');
-const sessionRouter = require('./routes/sessionRouter.js')
-const sessionController = require('./controllers/sessionController.js')
+const apiRouter = require('./routes/apiRouter.js');
+const authRouter = require('./routes/authRouter.js')
+const authController = require('./controllers/authController.js')
 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser())
+app.use(cookieParser());
 
-app.use('/remix', remixRouter);
-app.use('/auth', sessionRouter);
+app.use('/api', apiRouter);
+app.use('/auth', authRouter);
 
-app.use('/', sessionController.getJWT, sessionController.getSession); //, (req, res, next) => console.log(res.locals.upvoted));
+// Checks for JWT and session, the re-routes to /auth
+app.use('/', authController.getJWT, authController.getSession, (req, res, next) => {
+  if (res.locals.name) {
+    // probably send username here as well?
+    res.sendFile(path.join(__dirname, '../../client/index.html'));
+  }
+});
 
 
 // authorization URL for client to grant us access to reddit account:

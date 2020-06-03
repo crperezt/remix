@@ -1,3 +1,4 @@
+const path = require('path');
 const fetch = require('node-fetch');
 const base64 = require('base64-js');
 const FormData = require('form-data');
@@ -5,22 +6,24 @@ const { URLSearchParams } = require('url');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
-const sessionController = {};
+const {Session} = require('../models/remixModels.js');
 
-sessionController.getJWT = (req, res, next) => {
+const authController = {};
+
+authController.getJWT = (req, res, next) => {
   //check cookie for session
   console.log('getting JWT');
   if (req.cookies.ut) {
     console.log('JWT received', req.cookies.ut);
-    res.locals.userId = jwt.verify(req.cookies.ut, process.env.COOKIE_SECRET);
+    res.locals.name = jwt.verify(req.cookies.ut, process.env.COOKIE_SECRET);
   } 
   // else, serve main logged-off page, page should have link to reddit auth
   next();
 }
 
-sessionController.getSession = (req, res, next) => {
-  console.log("checking for userId");
-  if (!res.locals.userId) {
+authController.getSession = (req, res, next) => {
+  console.log("checking for name");
+  if (!res.locals.name) {
     console.log("no JWT found, redirecting to reddit auth");
     res.redirect('https://www.reddit.com/api/v1/authorize?client_id='
             + process.env.CLIENT_ID 
@@ -29,15 +32,29 @@ sessionController.getSession = (req, res, next) => {
             + '&redirect_uri='
             + process.env.REDIRECT_URI
             + '&duration=permanent&scope=history,identity');
-  } else {
-    console.log("Authenticated session for:", res.locals.userId);
+  } else { // got username from JWT, check database for session token
+    Session.findOne({name: res.locals.name})
+    .then((data) => {
+      if (data) {
+        console.log("Authenticated session for:", res.locals.name);
+        res.locals.token = data.token;
+        res.locals.refresh_token = data.refresh_token;
+        res.locals.expires_in = data.expires_in;
+        next();
+      } else {
+        res.sendFile(path.join(__dirname, '../../client/login.html'));
+      }
+    })
+    .catch((err) => {
+      console.log('Error getting session: ', err);
+    });
     // get reddit session token from db session collection
     // refresh token?
     // load dashboard, redirect to /dashboard? Or send index.html?
   }
 }
 
-sessionController.getNewToken = (req, res, next) => {
+authController.getNewToken = (req, res, next) => {
   console.log('received redirect request, retrieving token');
   if (req.query.state !== process.env.STATE) {
     console.log('diff state');
@@ -64,9 +81,11 @@ sessionController.getNewToken = (req, res, next) => {
     // store access_token in database session collection
     console.log('Got token', data.access_token);
     res.locals.token = data.access_token;
+    res.locals.refresh_token = data.refresh_token;
+    res.locals.expires_in = data.expires_in;
     getName(res.locals.token)
     .then(name => {
-      res.locals.userId = name
+      res.locals.name = name;
       next();
     });
   })
@@ -79,15 +98,28 @@ sessionController.getNewToken = (req, res, next) => {
   });
 }
 
-sessionController.createSession = (req, res, next) => {
-  // get userId and token from res.locals
+authController.createSession = (req, res, next) => {
+  // get name and token from res.locals
   // create and set JWT
-  console.log("Creating session for", res.locals.userId);
-  if (res.locals.userId) {
-    let jwtToken = jwt.sign(res.locals.userId, process.env.COOKIE_SECRET);
-    //res.cookies['ut'] = jwtToken;
-    res.cookie("ut", jwtToken)
-    return next();
+  console.log("Creating session for", res.locals.name);
+  if (res.locals.name) {
+    let jwtToken = jwt.sign(res.locals.name, process.env.COOKIE_SECRET);
+    Session.findOneAndUpdate({
+      name: res.locals.name},
+    {
+      name: res.locals.name,
+      token: res.locals.token,
+      refresh_token: res.locals.refresh_token,
+      expires_in: res.locals.expires_in
+    },
+    {upsert: true, new: true}).exec()
+    .then( () => {
+      res.cookie("ut", jwtToken);
+      return next();
+    })
+    .catch((err) => {
+      console.log('Error storing session: ', err);
+    });
   }
 }
 
@@ -131,4 +163,4 @@ function urlEncode(data) {
 }
 */
 
-module.exports = sessionController;
+module.exports = authController;

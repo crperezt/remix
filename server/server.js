@@ -19,11 +19,19 @@ app.use(cookieParser());
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 
+app.use('/login', authController.getSession, (req, res, next) => {res.redirect('/')});
+
 // Checks for JWT and session, the re-routes to /auth
 app.use('/', authController.getJWT, authController.getSession, (req, res, next) => {
   if (res.locals.name) {
     // probably send username here as well?
-    res.sendFile(path.join(__dirname, '../../client/index.html'));
+    console.log("Sending index.html");
+    // Switch to this when react front-end is plugged in
+    //res.sendFile(path.join(__dirname, '../client/index.html'));
+    res.sendFile(path.join(__dirname, '../index.html'));
+  } else {
+    console.log("sending login.html")
+    res.sendFile(path.join(__dirname, '../client/login.html'));
   }
 });
 

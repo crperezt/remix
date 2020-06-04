@@ -4,18 +4,24 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "start": "nodemon server/server.js",
+    "build": "webpack",
+    "start": "cross-env NODE_ENV=production node server/server.js",
+    "dev": "concurrently \"cross-env NODE_ENV=development nodemon server/server.js\"  \"webpack-dev-server --open\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "*",
     "form-data": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "node-fetch": "*"
+    "node-fetch": "*",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "*",
@@ -23,7 +29,6 @@
     "@babel/preset-react": "*",
     "babel-loader": "*",
     "concurrently": "*",
-    "cross-env": "*",
     "css-loader": "*",
     "file-loader": "*",
     "html-webpack-plugin": "*",
@@ -39,7 +44,8 @@
   "nodemonConfig": {
     "ignore": [
       "server/data/*",
-      "client/*"
+      "client/*",
+      "build"
     ]
   }
 }

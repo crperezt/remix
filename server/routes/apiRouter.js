@@ -5,16 +5,17 @@ const router = express.Router();
 
 router.use('/next/:num',  authController.getJWT, 
                           authController.getSession,
-                          remixController.getOlderUpvoted); 
+                          remixController.getOlderUpvoted,
+                          remixController.getCachedUpvoted); 
 
 router.use('/newest/:num',  authController.getJWT, 
                             authController.getSession, 
-                            remixController.getNewestUpvoted, 
-                            (req, res, next) => res.sendStatus(200));
+                            remixController.getNewestUpvoted,
+                            remixController.getCachedUpvoted);
 
 router.use('/upvoted/', authController.getJWT, 
                         authController.getSession, 
-                        remixController.getUserUpvoted, 
+                        remixController.getCachedUpvoted, 
                         (req, res, next) => res.sendStatus(200));
-                        
+
 module.exports = router;

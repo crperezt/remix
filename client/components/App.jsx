@@ -8,8 +8,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <p>"HELLOOOO WORLD!"</p>
+      <div className="mainContainer">
         <PostsDisplay/>
       </div>
     );

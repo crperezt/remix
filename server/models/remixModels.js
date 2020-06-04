@@ -53,7 +53,7 @@ const User = mongoose.model('user', userSchema);
 // url: url to post on reddit
 // image_url: url to image, if any
 const redditPostSchema = new Schema({
-  _id: String,
+  postId: {type: String, index: true, unique: true},
   title: String,
   url: String,
   thumbnail: String,

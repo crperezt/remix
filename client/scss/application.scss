@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap');
+@import 'variables';
+
+@media screen and (max-width: 1000px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1001px) and (max-width: 1883px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 1884px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+.mainContainer {
+  padding: 20px;
+}
+
+.displayDiv {
+  background-color: rgb(250, 250, 250);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.postCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /*background-color: rgb(255, 255, 255);*/
+  background-color: lighten($remixred, 48%);
+  font-family: 'Roboto', sans-serif;
+  color: $darker;
+  border: 1px solid $light;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 20px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  height: 280px;
+
+  .postTitle {
+    align-self: center;
+  }
+  a {
+    font-family: 'Josefin Sans', sans-serif;
+    color: $darker;
+    text-decoration: none;
+  }
+  .redditThumb {
+    height: 200px;
+    width: 200px;
+    align-self: center;
+  }
+
+  .postTags {
+    color: lighten($remixred, 5%);
+    font-family: 'Cairo';
+    font-size: 0.8em;
+  
+  }
+}
+
+
+
+h1 {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 4em;
+  color: $remixred;
+  text-align: center;
+}
+
+
+

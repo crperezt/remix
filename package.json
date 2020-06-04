@@ -34,6 +34,8 @@
     "html-webpack-plugin": "*",
     "mongoose": "^5.9.16",
     "nodemon": "*",
+    "sass": "^1.26.7",
+    "sass-loader": "^8.0.2",
     "style-loader": "*",
     "url-loader": "*",
     "webpack": "*",

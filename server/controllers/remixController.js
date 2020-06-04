@@ -150,7 +150,17 @@ remixController.getCachedUpvoted = async (req, res, next) => {
   userData.postList.forEach((v) => {
     postsList.push(v.postId);
   });
-  let posts = await RedditPost.find({postId: { $in: postsList}});
+  console.log("Finding postsList in RedditPost:", postsList);
+  // let posts = await RedditPost.find({postId: { $in: postsList}});
+  
+
+  let query = [
+    {$match: {postId: {$in: postsList}}},
+    {$addFields: {"__order": {$indexOfArray: [postsList, "$postId" ]}}},
+    {$sort: {"__order": 1}}
+   ];
+   let posts = await RedditPost.aggregate(query);
+   console.log("Sending client: ", posts);
   res.json({posts: posts});
 };
 

@@ -6,14 +6,17 @@ const STEP = 20;
 class PostsDisplay extends Component {
   constructor(props) {
     super(props);
+
     this.getAllPosts = this.getAllPosts.bind(this);
     this.getNewestPosts = this.getNewestPosts.bind(this);
     this.getOlderPosts = this.getOlderPosts.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
     this.state = {posts: [],
                   lastDisplayed: -1};
   }
 
   componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
     console.log('componentDidMount ran');
     if (this.state.posts.length === 0) {
       this.getAllPosts()
@@ -23,6 +26,10 @@ class PostsDisplay extends Component {
         }
       });
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
   }
 
   getAllPosts() {
@@ -81,6 +88,15 @@ class PostsDisplay extends Component {
       .catch(err => console.log('getNewestPosts error: ', err));
   }
 
+  handleScroll(e) {
+    console.log("handling scroll");
+    console.log("scrollHeight", document.body.scrollHeight);
+    console.log("scrollTop", document.body.scrollTop);
+    console.log("clientHeight", document.body.clientHeight);
+    const bottom = document.body.scrollHeight - document.body.scrollTop ===document.body.clientHeight;
+    if (bottom) this.getOlderPosts();
+  }
+
   render() {
     //for loops with PostCards
     let posts = [];
@@ -97,7 +113,7 @@ class PostsDisplay extends Component {
                            postId={this.state.posts[i].postId}/>);
     }
     return (
-      <div>
+      <div onScroll={this.handleScroll}>
       <button type="button" onClick={this.getNewestPosts}>Get latest posts</button>
       <div className="displayDiv">
         {posts}

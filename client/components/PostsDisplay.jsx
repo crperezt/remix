@@ -11,8 +11,10 @@ class PostsDisplay extends Component {
     this.getNewestPosts = this.getNewestPosts.bind(this);
     this.getOlderPosts = this.getOlderPosts.bind(this);
     this.handleScroll = this.handleScroll.bind(this);
+    this.addTag = this.addTag.bind(this);
     this.state = {posts: [],
-                  lastDisplayed: -1};
+                  lastDisplayed: -1,
+                  showModal: false};
   }
 
   componentDidMount() {
@@ -40,7 +42,7 @@ class PostsDisplay extends Component {
     })
     .then(res => res.json())
     .then((data) => {
-      this.setState({posts: data.posts});
+      this.setState({posts: data.posts, lastDisplayed: -1});
       return data.posts ? data.posts.length : 0;
     })
     .catch(err => console.log('getAllPosts error: ', err));
@@ -88,6 +90,24 @@ class PostsDisplay extends Component {
       .catch(err => console.log('getNewestPosts error: ', err));
   }
 
+  addTag(e) {
+    let method = 'POST';
+    let postId = e.target.id;
+    postId = postId.slice(3);
+    
+    fetch('/api/tag/' + postId, {
+      method,
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(res => res.json())
+      .then((data) => {
+        //let newPosts = this.state.posts;
+        //data.map((v) => newPosts.push(v));
+        this.setState({posts: data.posts});
+      })
+      .catch(err => console.log('getNewestPosts error: ', err));
+  }
+
   handleScroll(e) {
     console.log("handling scroll");
     console.log("scrollHeight", document.body.scrollHeight);
@@ -95,6 +115,12 @@ class PostsDisplay extends Component {
     console.log("clientHeight", document.body.clientHeight);
     const bottom = document.body.scrollHeight - document.body.scrollTop ===document.body.clientHeight;
     if (bottom) this.getOlderPosts();
+  }
+
+  showTagModal(e) {
+    let postId = e.target.id;
+    postId = postId.slice(3);
+    setState({...this.state, showModal: true});
   }
 
   render() {
@@ -110,18 +136,23 @@ class PostsDisplay extends Component {
                            title={this.state.posts[i].title} 
                            postUrl={this.state.posts[i].url}
                            imageUrl={this.state.posts[i].thumbnail}
-                           postId={this.state.posts[i].postId}/>);
+                           postId={this.state.posts[i].postId}
+                           tags={this.state.posts[i].tags}
+                           addTag={this.addTag}/>);
     }
     return (
       <div onScroll={this.handleScroll}>
-      <button type="button" onClick={this.getNewestPosts}>Get latest posts</button>
+      <a className="morePosts" href="" onClick={this.getNewestPosts}>Get latest posts</a>
       <div className="displayDiv">
         {posts}
       </div>
-      <button type="button" onClick={this.getOlderPosts}>Get more posts</button>
       </div>
+
     );
   };
 }
 
+{/* </div>
+      <button type="button" onClick={this.getOlderPosts}>Get more posts</button>
+      </div> */}
 export default PostsDisplay;

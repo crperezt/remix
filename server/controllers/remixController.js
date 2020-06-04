@@ -81,7 +81,7 @@ remixController.getUpvoted = (req, res, next) => {
         postId: v.data.name,
       });
     }
-    console.log("got from server: ", newPostList);
+    //console.log("got from server: ", newPostList);
     
     //Insert new posts to RedditPosts collection
     RedditPost.insertMany(newPosts, {ordered: true})
@@ -147,10 +147,12 @@ remixController.getCachedUpvoted = async (req, res, next) => {
     return res.status(418).json("no user data found");
   }
   const postsList = [];
+  const postsTags = [];
   userData.postList.forEach((v) => {
     postsList.push(v.postId);
+    postsTags.push(v.tags)
   });
-  console.log("Finding postsList in RedditPost:", postsList);
+  //console.log("Finding postsList in RedditPost:", postsList);
   // let posts = await RedditPost.find({postId: { $in: postsList}});
   
 
@@ -159,9 +161,23 @@ remixController.getCachedUpvoted = async (req, res, next) => {
     {$addFields: {"__order": {$indexOfArray: [postsList, "$postId" ]}}},
     {$sort: {"__order": 1}}
    ];
-   let posts = await RedditPost.aggregate(query);
-   console.log("Sending client: ", posts);
+  let posts = await RedditPost.aggregate(query);
+  posts.forEach((v, i) => v["tags"] = postsTags[i] );
+  console.log("Sending client: ", posts);
   res.json({posts: posts});
+};
+
+remixController.tagPost = async (req, res, next) => {
+  //let postId = req.params.postId;
+
+  let updatedUser = await User.findOneAndUpdate({ name: res.locals.name, 
+                          "postList.postId": req.params.postId},
+                        { $addToSet: {"postList.$.tags": [req.body.newTag]}},
+                        {new: true}).exec();
+  
+  //console.log("added tag for user", updatedUser);
+  
+  res.status(200).json(updatedUser);
 };
 
 module.exports = remixController;

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap');
 @import 'variables';
 
 @media screen and (max-width: 1000px) {
@@ -69,12 +69,36 @@ html {
 
   .postTags {
     color: lighten($remixred, 5%);
+    /*background-color: lighten($remixred, 43%);*/
     font-family: 'Cairo';
-    font-size: 0.8em;
-  
+    font-weight: 900;
+    font-size: 0.9em;
+    align-self: center;
+    /*height: 1.5em;*/
+  }
+
+  .tagButton {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+  }
+
+  .tagDiv {
+    display: flex;
+    align-items: center;
   }
 }
 
+.morePosts{
+  color: $remixred;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.morePosts:hover {
+  text-decoration: underline;
+}
 
 
 h1 {
@@ -82,6 +106,8 @@ h1 {
   font-size: 4em;
   color: $remixred;
   text-align: center;
+  text-decoration: none;
+  
 }
 
 

@@ -15,11 +15,22 @@ const authController = require('./controllers/authController.js')
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
-
+app.use('/assets', express.static(path.resolve(__dirname, '../client/assets')));
+console.log('dirname is: ', __dirname);
 app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 
-app.use('/login', authController.getSession, (req, res, next) => {res.redirect('/')});
+//app.use('/login', authController.getSession, (req, res, next) => {res.redirect('/')});
+app.use('/login', (req, res, next) => {res.sendFile(path.resolve(__dirname, '..'))});
+
+if(process.env.NODE_ENV !== 'development') {
+  // statically serve everything in the build folder on the route '/build'
+  app.use('/build', express.static(path.join(__dirname, '../build')));
+  // serve index.html on the route '/'
+  // app.get('/', (req, res) => {
+  //   res.sendFile(path.join(__dirname, '../index.html'));
+  // });
+}
 
 // Checks for JWT and session, the re-routes to /auth
 app.use('/', authController.getJWT, authController.getSession, (req, res, next) => {
@@ -34,6 +45,8 @@ app.use('/', authController.getJWT, authController.getSession, (req, res, next) 
     res.sendFile(path.join(__dirname, '../client/login.html'));
   }
 });
+
+
 
 
 // authorization URL for client to grant us access to reddit account:

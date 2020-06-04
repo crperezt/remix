@@ -15,7 +15,10 @@ router.use('/newest/:num',  authController.getJWT,
 
 router.use('/upvoted/', authController.getJWT, 
                         authController.getSession, 
-                        remixController.getCachedUpvoted, 
-                        (req, res, next) => res.sendStatus(200));
+                        remixController.getCachedUpvoted);
+
+router.post('/tag/:postId', authController.getJWT, 
+                            authController.getSession, 
+                            remixController.tagPost);
 
 module.exports = router;

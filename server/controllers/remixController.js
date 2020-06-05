@@ -108,7 +108,7 @@ remixController.getUpvoted = (req, res, next) => {
           //newPostList.reverse();
           newPostList = newPostList.concat(user.postList);
         }
-        console.log('newPostList is: ', newPostList);
+        // console.log('newPostList is: ', newPostList);
         return user;
       })
       .then((user) => {
@@ -117,8 +117,8 @@ remixController.getUpvoted = (req, res, next) => {
         //                     newPostList[newPosts.length - 1].name;
         let oldest_anchor = newPostList[newPostList.length - 1].postId;
         let newest_anchor = newPostList[0].postId;
-        console.log('setting oldest_anchor:', oldest_anchor);
-        console.log('setting newest_anchor:', newest_anchor);
+        // console.log('setting oldest_anchor:', oldest_anchor);
+        // console.log('setting newest_anchor:', newest_anchor);
         User.findOneAndUpdate(
           {name: res.locals.name}, 
           {postList: newPostList, 
@@ -163,7 +163,7 @@ remixController.getCachedUpvoted = async (req, res, next) => {
    ];
   let posts = await RedditPost.aggregate(query);
   posts.forEach((v, i) => v["tags"] = postsTags[i] );
-  console.log("Sending client: ", posts);
+  // console.log("Sending client: ", posts);
   res.json({posts: posts});
 };
 

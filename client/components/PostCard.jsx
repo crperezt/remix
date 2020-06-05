@@ -10,18 +10,21 @@ const PostCard = (props) => {
     trimmedTitle = trimmedTitle.concat('...');
   }
 
+
+
   return (
       <div className="postCard">
-        <a className="postTitle" href={postUrl}>{trimmedTitle} {postId}</a>
-        {imageUrl !== 'default' &&
-          <img className="redditThumb" src={imageUrl}/>
-        }
+        {/* {imageUrl !== 'default' && */}
+          <img id={'img'+postId} className="redditThumb" src={imageUrl}/>
+          <a className="postTitle" href={postUrl}>{trimmedTitle}</a>
+        {/* } */}
+
         <div className="tagDiv">
           <img  id={'tag'+postId} 
                 className="tagButton" 
                 src='/assets/add-button-small.png' 
                 onClick={showTagModal}/>
-          <PostTags tags={tags}/>
+          <PostTags key={"tag"+postId} tags={tags}/>
         </div>
       </div>
 

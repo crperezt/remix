@@ -131,11 +131,15 @@ class PostsDisplay extends Component {
     console.log("lastDisplayed is: ", this.state.lastDisplayed);
     // Adds posts reverse order, so newest are on top
     //for (let i = this.state.posts.length - 1; i > this.state.lastDisplayed; i--) {
-      for (let i = 0; i < Math.min(this.state.lastDisplayed + 1, this.state.posts.length); i++) {
+    for (let i = 0; i < Math.min(this.state.lastDisplayed + 1, this.state.posts.length); i++) {
+      let newImageUrl = this.state.posts[i].thumbnail;
+      if (newImageUrl === 'default' || newImageUrl === 'self') {
+        newImageUrl = '/assets/snoo.png';
+      }
       posts.push(<PostCard key={'post' + i} 
                            title={this.state.posts[i].title} 
                            postUrl={this.state.posts[i].url}
-                           imageUrl={this.state.posts[i].thumbnail}
+                           imageUrl={newImageUrl}
                            postId={this.state.posts[i].postId}
                            tags={this.state.posts[i].tags}
                            addTag={this.addTag}/>);

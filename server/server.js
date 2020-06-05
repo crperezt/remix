@@ -21,7 +21,7 @@ app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 
 //app.use('/login', authController.getSession, (req, res, next) => {res.redirect('/')});
-app.use('/login', (req, res, next) => {res.sendFile(path.resolve(__dirname, '..'))});
+app.use('/login', (req, res, next) => {res.sendFile(path.resolve(__dirname, '../client/login.html'))});
 
 if(process.env.NODE_ENV !== 'development') {
   // statically serve everything in the build folder on the route '/build'
@@ -46,20 +46,9 @@ app.use('/', authController.getJWT, authController.getSession, (req, res, next) 
   }
 });
 
-
-
-
-// authorization URL for client to grant us access to reddit account:
-// https://www.reddit.com/api/v1/authorize?client_id=pE6HnyBUJuDYDQ&response_type=code&state=elestado&redirect_uri=http://localhost:8080/remix&duration=permanent&scope=history
-
-
-
-
 app.use((req, res, next) => {
   res.sendStatus(404);
-  //throw new Error('this is testing the global error handler')
   console.log('404 handler triggered')
-  //next('error testing it out');
 })
 
 /**
